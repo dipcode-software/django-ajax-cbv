@@ -1,0 +1,1 @@
+# django-ajax-partials
