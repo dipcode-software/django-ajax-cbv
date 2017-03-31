@@ -154,7 +154,7 @@
 
                     .fail(function () {
                         self.$form.find(':input').not(disabled_fields).prop('disabled', false);
-                        self.$form.trigger("ajaxforms:fail");;
+                        self.$form.trigger("ajaxforms:fail");
                     })
 
                     .always(function() {

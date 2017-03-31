@@ -7,9 +7,8 @@
  * https://github.com/VodkaBears/Remodal#remodal
  *****************************************************************/
 
-"use strict";
-
 (function($) {
+    "use strict";
 
     $.modalPartial = function(url, options)
     {
