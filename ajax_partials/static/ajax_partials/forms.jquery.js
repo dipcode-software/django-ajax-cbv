@@ -120,7 +120,7 @@
             {
                 var self = this;
 
-                this.$form.trigger("ajaxforms:onbeforesubmit");
+                this.$form.trigger("ajaxforms:beforesubmit");
 
                 var url = this.$form.attr("action") || window.location.href;
                 var data = new FormData(this.$form.get(0));
@@ -131,7 +131,7 @@
                 }
 
                 this.$form.find(':input').prop('disabled', true);
-                this.$form.trigger("ajaxforms:onsubmit");
+                this.$form.trigger("ajaxforms:submit");
 
                 return this.request(url, data)
 
@@ -139,11 +139,11 @@
                     self.processFormErrors(self.$form, response.errors_list);
 
                     if (!$.isEmptyObject(response.errors_list)) {
-                        self.$form.trigger("ajaxforms:onfielderror");
+                        self.$form.trigger("ajaxforms:fielderror");
                         self.$form.find(':input').not(disabled_fields).prop('disabled', false);
                     }
                     else {
-                        self.$form.trigger("ajaxforms:onsubmitsuccess");
+                        self.$form.trigger("ajaxforms:submitsuccess");
                         self.$form.trigger('form:submit:success');
                     }
                     if( response.action){
@@ -153,11 +153,11 @@
 
                 .fail(function () {
                     self.$form.find(':input').not(disabled_fields).prop('disabled', false);
-                    self.$form.trigger("ajaxforms:onfail");;
+                    self.$form.trigger("ajaxforms:fail");;
                 })
 
                 .always(function() {
-                    self.$form.trigger("ajaxforms:onsubmitdone");
+                    self.$form.trigger("ajaxforms:submitdone");
                 });
             },
 
