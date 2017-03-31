@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 
-from .utils import add_errors_prefix_form
+from ajax_partials.utils import add_errors_prefix_form
 
 
 class AjaxResponseAction():
@@ -20,26 +20,61 @@ class AjaxResponseAction():
     )
 
 
+class AjaxResponseStatus():
+    """ Represents list of status available at ajax response """
+
+    ERROR = "error"
+    SUCCESS = "success"
+
+    choices = (
+        ERROR,
+        SUCCESS,
+    )
+
+
 class AjaxResponseMixin(object):
     """ Mixin responsible to give the JSON response """
     action = AjaxResponseAction.NOTHING
+    json_status = AjaxResponseStatus.SUCCESS
 
-    def json_to_response(self, action=None, success_url=None):
+    def json_to_response(self, action=None, json_status=None, success_url=None,
+                         json_data={}, **response_kwargs):
         """ Valid response with next action to be followed by the JS """
-        self.action = action or self.get_action()
+        data = {
+            "status": self.get_status(json_status),
+            "action": self.get_action(action),
+            "extra_data": self.get_json_data(json_data)
+        }
+
+        if self.action == AjaxResponseAction.REDIRECT:
+            data["action_url"] = success_url or self.get_success_url()
+        return JsonResponse(data, **response_kwargs)
+
+    def get_action(self, action=None):
+        """ Returns action to take after call """
+        if action:
+            self.action = action
+
         if self.action not in AjaxResponseAction.choices:
             raise ValueError(
                 "Invalid action selected: '{}'".format(self.action))
-        data = {
-            "action": self.action,
-        }
-        if self.action == AjaxResponseAction.REDIRECT:
-            data["action_url"] = success_url or self.get_success_url()
-        return JsonResponse(data)
 
-    def get_action(self):
-        """ Returns action to take after call """
         return self.action
+
+    def get_status(self, json_status=None):
+        """ Returns status of for json """
+        if json_status:
+            self.json_status = json_status
+
+        if self.json_status not in AjaxResponseStatus.choices:
+            raise ValueError(
+                "Invalid status selected: '{}'".format(self.json_status))
+
+        return self.json_status
+
+    def get_json_data(self, json_data={}):
+        """ Returns any extra data to add to json """
+        return json_data
 
 
 class FormAjaxMixin(AjaxResponseMixin):
@@ -52,7 +87,8 @@ class FormAjaxMixin(AjaxResponseMixin):
             data = {
                 "errors_list": self.add_prefix(form.errors, prefix),
             }
-            return JsonResponse(data, status=400)
+            return self.json_to_response(status=400, json_data=data,
+                                         json_status=AjaxResponseStatus.ERROR)
         else:
             return response
 
@@ -69,7 +105,7 @@ class FormAjaxMixin(AjaxResponseMixin):
         if not prefix:
             prefix = self.get_prefix()
         if prefix:
-            return add_errors_prefix_form(errors, prefix)
+            return {"%s-%s" % (prefix, k): v for k, v in errors.items()}
         return errors
 
 
@@ -78,9 +114,8 @@ class PartialAjaxMixin(object):
 
     def render_to_response(self, context, **response_kwargs):
         """ Returns the rendered template in JSON format """
-        context = self.get_context_data()
         data = {
-            "content": render_to_string(self.template_name, context,
+            "content": render_to_string(self.get_template_names(), context,
                                         request=self.request)
         }
         return JsonResponse(data)
