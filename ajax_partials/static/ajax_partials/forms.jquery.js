@@ -8,9 +8,10 @@
  *   <form data-ajax-submit>
  *****************************************************************/
 
-"use strict";
+
 
 (function($) {
+    "use strict";
 
     function CacheFile(name, filename, file) {
         this.name = name;
@@ -135,30 +136,30 @@
 
                 return this.request(url, data)
 
-                .done(function(response) {
-                    self.processFormErrors(self.$form, response.errors_list);
+                    .done(function(response) {
+                        self.processFormErrors(self.$form, response.errors_list);
 
-                    if (!$.isEmptyObject(response.errors_list)) {
-                        self.$form.trigger("ajaxforms:fielderror");
+                        if (!$.isEmptyObject(response.errors_list)) {
+                            self.$form.trigger("ajaxforms:fielderror");
+                            self.$form.find(':input').not(disabled_fields).prop('disabled', false);
+                        }
+                        else {
+                            self.$form.trigger("ajaxforms:submitsuccess");
+                            self.$form.trigger('form:submit:success');
+                        }
+                        if( response.action){
+                            self.processResponse(response.action, response.action_url);
+                        }
+                    })
+
+                    .fail(function () {
                         self.$form.find(':input').not(disabled_fields).prop('disabled', false);
-                    }
-                    else {
-                        self.$form.trigger("ajaxforms:submitsuccess");
-                        self.$form.trigger('form:submit:success');
-                    }
-                    if( response.action){
-                        self.processResponse(response.action, response.action_url);
-                    }
-                })
+                        self.$form.trigger("ajaxforms:fail");;
+                    })
 
-                .fail(function () {
-                    self.$form.find(':input').not(disabled_fields).prop('disabled', false);
-                    self.$form.trigger("ajaxforms:fail");;
-                })
-
-                .always(function() {
-                    self.$form.trigger("ajaxforms:submitdone");
-                });
+                    .always(function() {
+                        self.$form.trigger("ajaxforms:submitdone");
+                    });
             },
 
             processFormErrors: function processFormErrors($form, errors_list)
