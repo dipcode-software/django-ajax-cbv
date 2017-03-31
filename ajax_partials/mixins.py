@@ -3,8 +3,6 @@ from __future__ import unicode_literals
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 
-from ajax_partials.utils import add_errors_prefix_form
-
 
 class AjaxResponseAction():
     """ Represents list of actions available after ajax response """

@@ -71,12 +71,10 @@
     $.fn.djangoAjaxForms = function(options)
     {
         var opts = $.extend({
-            fieldIdSelector: "#field_id_",
-            fieldWrapperSelector: ".pure-field",
+            fieldIdSelector: "field_id_",
             fieldErrorClass: "errorlist",
             errorClass: "error",
             cacheFilesAttr: "[data-ajax-submit-cachefiles]",
-
             canSubmitFn: null,
             onFailFn: null,
             onFieldErrorFn: null,
@@ -187,39 +185,23 @@
 
             processFormErrors: function processFormErrors($form, errors_list)
             {
-                var $wrappers = $form.find(opts.fieldWrapperSelector);
+                var $wrappers = $form.find("[id^='" + opts.fieldIdSelector + "']");
 
                 $wrappers.removeClass(opts.errorClass).find("." + opts.fieldErrorClass).remove();
 
                 for (var fieldName in errors_list) {
                     var errors = errors_list[fieldName];
 
-                    if (this.isNestedFormsetErrors(errors)) {
-                        this.processFormErrors($form.find("[data-formset-name='"+fieldName+"']"), errors);
-                    }
-                    else {
-                        if (fieldName.search("__all__") >= 0) {
-                            if ( $.isFunction( opts.onNonFieldErrorFn ) ) {
-                                opts.onNonFieldErrorFn( errors );
-                            }
-                        }
-                        else {
-                            var $field = $form.find(opts.fieldIdSelector + fieldName);
-                            var onChange = function () {
-                                $field.removeClass('error', 200).find('.errorlist').fadeOut(200, function () {
-                                    $(this).remove();
-                                });
-                            };
+                    var $field = $form.find("#" + opts.fieldIdSelector + fieldName);
+                    var onChange = function () {
+                        $field.removeClass('error', 200).find('.errorlist').fadeOut(200, function () {
+                            $(this).remove();
+                        });
+                    };
 
-                            $field.addClass(opts.errorClass).append(this.renderErrorList(errors));
-                            $field.one('change', onChange);
-                        }
-                    }
+                    $field.addClass(opts.errorClass).append(this.renderErrorList(errors));
+                    $field.one('change', onChange);
                 }
-            },
-
-            isNestedFormsetErrors: function isNestedFormsetErrors(errors) {
-                return $.isPlainObject(errors);
             },
 
             processResponse: function processResponse(action, value)
