@@ -76,14 +76,7 @@
             errorClass: "error",
             cacheFilesAttr: "[data-ajax-submit-cachefiles]",
             canSubmitFn: null,
-            onFailFn: null,
-            onFieldErrorFn: null,
-            onNonFieldErrorFn: null,
             onRenderErrorFn: null,
-            onSubmit: null,
-            onSubmitDone: null,
-            onBeforeSubmit: null,
-            onSubmitSuccess: null
         }, $.fn.djangoAjaxForms.defaults, options);
 
 
@@ -127,9 +120,7 @@
             {
                 var self = this;
 
-                if ( $.isFunction( opts.onBeforeSubmit ) ) {
-                    opts.onBeforeSubmit(this.$form);
-                }
+                this.$form.trigger("ajaxforms:onbeforesubmit");
 
                 var url = this.$form.attr("action") || window.location.href;
                 var data = new FormData(this.$form.get(0));
@@ -140,10 +131,7 @@
                 }
 
                 this.$form.find(':input').prop('disabled', true);
-
-                if ( $.isFunction( opts.onSubmit ) ) {
-                    opts.onSubmit(this.$form);
-                }
+                this.$form.trigger("ajaxforms:onsubmit");
 
                 return this.request(url, data)
 
@@ -151,16 +139,11 @@
                     self.processFormErrors(self.$form, response.errors_list);
 
                     if (!$.isEmptyObject(response.errors_list)) {
-
-                        if ( $.isFunction( opts.onFieldErrorFn ) ) {
-                            opts.onFieldErrorFn(self.$form);
-                        }
+                        self.$form.trigger("ajaxforms:onfielderror");
                         self.$form.find(':input').not(disabled_fields).prop('disabled', false);
                     }
                     else {
-                        if ( $.isFunction( opts.onSubmitSuccess ) ) {
-                            opts.onSubmitSuccess(self.$form);
-                        }
+                        self.$form.trigger("ajaxforms:onsubmitsuccess");
                         self.$form.trigger('form:submit:success');
                     }
                     if( response.action){
@@ -170,16 +153,11 @@
 
                 .fail(function () {
                     self.$form.find(':input').not(disabled_fields).prop('disabled', false);
-
-                    if ( $.isFunction( opts.onFailFn ) ) {
-                        opts.onFailFn();
-                    }
+                    self.$form.trigger("ajaxforms:onfail");;
                 })
 
                 .always(function() {
-                    if ( $.isFunction( opts.onSubmitDone ) ) {
-                        opts.onSubmitDone(self.$form);
-                    }
+                    self.$form.trigger("ajaxforms:onsubmitdone");
                 });
             },
 
