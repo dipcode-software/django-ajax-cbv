@@ -121,9 +121,11 @@ class PartialAjaxMixin(object):
 
     def render_to_response(self, context, **response_kwargs):
         """ Returns the rendered template in JSON format """
-        context.update({
-            'title': self.get_partial_title()
-        })
+        partial_title = self.get_partial_title()
+        if partial_title:
+            context.update({
+                'title': self.get_partial_title()
+            })
         if self.request.is_ajax():
             data = {
                 "content": render_to_string(
