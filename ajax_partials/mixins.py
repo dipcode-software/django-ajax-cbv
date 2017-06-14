@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 
 from django.template.loader import render_to_string
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
+from django.conf import settings
 
 
 class AjaxResponseAction():
@@ -87,16 +88,14 @@ class FormAjaxMixin(AjaxResponseMixin):
             }
             return self.json_to_response(status=400, json_data=data,
                                          json_status=AjaxResponseStatus.ERROR)
-        else:
-            return response
+        return response
 
     def form_valid(self, form):
         """ If form valid return response with action """
-        response = super(AjaxResponseMixin, self).form_valid(form)
+        response = super(FormAjaxMixin, self).form_valid(form)
         if self.request.is_ajax():
             return self.json_to_response()
-        else:
-            return response
+        return response
 
     def add_prefix(self, errors, prefix):
         """Add form prefix to errors"""
@@ -109,11 +108,23 @@ class FormAjaxMixin(AjaxResponseMixin):
 
 class PartialAjaxMixin(object):
     """ Mixin responsible to return the JSON with template rendered """
+    partial_title = None
+
+    def get_partial_title(self):
+        return self.partial_title
 
     def render_to_response(self, context, **response_kwargs):
         """ Returns the rendered template in JSON format """
-        data = {
-            "content": render_to_string(self.get_template_names(), context,
-                                        request=self.request)
-        }
-        return JsonResponse(data)
+        context.update({
+            'title': self.get_partial_title()
+        })
+        if self.request.is_ajax():
+            data = {
+                "content": render_to_string(
+                    self.get_template_names(), context, request=self.request)
+            }
+            return JsonResponse(data)
+        if settings.DEBUG:
+            return super(PartialAjaxMixin, self).render_to_response(
+                context, **response_kwargs)
+        raise Http404()
