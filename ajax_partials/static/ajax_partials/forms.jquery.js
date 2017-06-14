@@ -146,12 +146,14 @@
                     })
 
                     .fail(function ($xhr) {
-                        var response = $xhr.responseJSON.extra_data;
+                        var response = $xhr.responseJSON;
 
-                        self.processFormErrors(self.$form, response.errors_list);
+                        if (response && response.hasOwnProperty('extra_data')) {
+                            self.processFormErrors(self.$form, response.errors_list);
 
-                        if (!$.isEmptyObject(response.errors_list)) {
-                            self.$form.trigger("ajaxforms:fielderror");
+                            if (!$.isEmptyObject(response.errors_list)) {
+                                self.$form.trigger("ajaxforms:fielderror");
+                            }
                         }
 
                         self.$form.find(':input').not(disabled_fields).prop('disabled', false);

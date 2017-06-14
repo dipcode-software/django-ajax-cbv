@@ -90,6 +90,12 @@ class FormAjaxMixin(AjaxResponseMixin):
                                          json_status=AjaxResponseStatus.ERROR)
         return response
 
+    def get_success_url(self):
+        """ """
+        if not self.request.is_ajax():
+            return super(FormAjaxMixin, self).get_success_url()
+        return None
+
     def form_valid(self, form):
         """ If form valid return response with action """
         response = super(FormAjaxMixin, self).form_valid(form)
