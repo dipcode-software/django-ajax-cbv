@@ -72,9 +72,9 @@
     $.fn.djangoAjaxForms = function(options)
     {
         var opts = $.extend({
-            fieldIdSelector: "field_id_",
-            fieldErrorClass: "errorlist",
-            errorClass: "error",
+            fieldIdSelector: "div_id_",
+            fieldErrorClass: "form-control-feedback",
+            errorClass: "has-danger",
             cacheFilesAttr: "[data-ajax-submit-cachefiles]",
             canSubmitFn: null,
             onRenderErrorFn: null,
@@ -137,22 +137,25 @@
                 return this.request(url, data)
 
                     .done(function(response) {
-                        self.processFormErrors(self.$form, response.errors_list);
+                        self.$form.trigger("ajaxforms:submitsuccess");
+                        self.$form.trigger('form:submit:success');
 
-                        if (!$.isEmptyObject(response.errors_list)) {
-                            self.$form.trigger("ajaxforms:fielderror");
-                            self.$form.find(':input').not(disabled_fields).prop('disabled', false);
-                        }
-                        else {
-                            self.$form.trigger("ajaxforms:submitsuccess");
-                            self.$form.trigger('form:submit:success');
-                        }
-                        if( response.action){
+                        if( response.action ){
                             self.processResponse(response.action, response.action_url);
                         }
                     })
 
-                    .fail(function () {
+                    .fail(function ($xhr) {
+                        var response = $xhr.responseJSON;
+
+                        if (response && response.hasOwnProperty('extra_data')) {
+                            self.processFormErrors(self.$form, response.errors_list);
+
+                            if (!$.isEmptyObject(response.errors_list)) {
+                                self.$form.trigger("ajaxforms:fielderror");
+                            }
+                        }
+
                         self.$form.find(':input').not(disabled_fields).prop('disabled', false);
                         self.$form.trigger("ajaxforms:fail");
                     })
@@ -199,11 +202,7 @@
 
             renderErrorList: function renderErrorList(errorsList)
             {
-                var $elem = $("<ul>").addClass(opts.fieldErrorClass);
-
-                for (var field in errorsList) {
-                    $elem.append($("<li>").text(errorsList[field]));
-                }
+                var $elem = $("<div>").addClass(opts.fieldErrorClass).text(errorsList.join(', '));
 
                 if ( $.isFunction( opts.onRenderErrorFn ) ) {
                     $elem = opts.onRenderErrorFn( $elem, errorsList );
