@@ -7,9 +7,9 @@ from django.views.generic.edit import FormView
 from django.forms import Form
 from django.test import SimpleTestCase
 
-from ajax_partials.mixins import (AjaxResponseAction, AjaxResponseMixin,
-                                  FormAjaxMixin, AjaxResponseStatus,
-                                  PartialAjaxMixin)
+from ajax_views.mixins import (
+    AjaxResponseAction, AjaxResponseMixin, FormAjaxMixin, AjaxResponseStatus,
+    PartialAjaxMixin)
 
 
 class DummyForm(Form):
@@ -133,7 +133,7 @@ class PartialAjaxMixinTest(SimpleTestCase):
         self.view = self.DummyView()
         self.view.request = MagicMock()
 
-    @patch('ajax_partials.mixins.render_to_string',
+    @patch('ajax_views.mixins.render_to_string',
            return_value="<html></html>")
     def test_render_to_response(self, render_to_string):
         result = self.view.render_to_response({})
