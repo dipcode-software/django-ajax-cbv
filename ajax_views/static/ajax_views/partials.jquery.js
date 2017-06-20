@@ -21,7 +21,6 @@
             var $partialContainer = $($elem.data('partial'));
             var partialUrl = $elem.data('partial-url');
             var partialData = $elem.data('partial-data') || {};
-
             $elem.on('click', function () {
 
                 // redefine previous content
@@ -32,7 +31,7 @@
                 }
 
                 $elem.trigger('partial:loading', [$partialContainer]);
-
+                partialData = $elem[0].dataset.partialData || {}; // Repopulate the partialData in case it has been changed after the initial render.
                 self.request(partialUrl, partialData).done(function (data) {
 
                     self.injectPartial($partialContainer, data.content).done(function() {
