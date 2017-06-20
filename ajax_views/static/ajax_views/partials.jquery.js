@@ -20,6 +20,7 @@
             var self = this;
             var $partialContainer = $($elem.data('partial'));
             var partialUrl = $elem.data('partial-url');
+            var partialData = $elem.data('partial-data') || {};
 
             $elem.on('click', function () {
 
@@ -32,7 +33,7 @@
 
                 $elem.trigger('partial:loading', [$partialContainer]);
 
-                self.request(partialUrl).done(function (data) {
+                self.request(partialUrl, partialData).done(function (data) {
 
                     self.injectPartial($partialContainer, data.content).done(function() {
                         $partialContainer.find('form').djangoAjaxForms();
@@ -50,11 +51,12 @@
 
         DjangoPartials.prototype = {
 
-            request: function request(url)
+            request: function request(url, data)
             {
                 return $.ajax({
                     method: 'GET',
-                    url: url
+                    url: url,
+                    data: data
                 });
             },
 
