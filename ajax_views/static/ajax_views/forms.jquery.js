@@ -68,6 +68,14 @@
         }
     };
 
+    var methods = {
+        submit: function (data) {
+            var daf = this.data('daf-data')
+            if (daf) {
+                daf.submit(data);
+            }
+        }
+    };
 
     $.fn.djangoAjaxForms = function(options)
     {
@@ -80,9 +88,11 @@
             onRenderErrorFn: null,
         }, $.fn.djangoAjaxForms.defaults, options);
 
-
         function DjangoAjaxForms($form)
         {
+
+            $form.data('daf-data', this);
+
             var self = this,
                 canSubmit = true;
 
@@ -106,26 +116,39 @@
 
         DjangoAjaxForms.prototype = {
 
-            request: function request(url, data)
+            request: function request(url, data, isCustomData)
             {
-                return $.ajax(url, {
+                var options = {
                     data: data,
                     method: 'POST',
-                    contentType: false,
-                    processData: false,
                     dataType: 'json'
-                });
+                }
+
+                if ( !isCustomData ) {
+                    options.push({
+                        contentType: false,
+                        processData: false
+                    });
+                }
+
+                return $.ajax(url, options);
             },
 
-            submit: function submit()
+            submit: function submit(customData)
             {
                 var self = this;
 
                 this.$form.trigger("ajaxforms:beforesubmit");
 
                 var url = this.$form.attr("action") || window.location.href;
-                var data = new FormData(this.$form.get(0));
                 var disabled_fields = this.$form.find(":input:disabled");
+                var data = customData;
+                var isCustomData = true;
+
+                if (customData === undefined) {
+                    data = new FormData(this.$form.get(0));
+                    isCustomData = false;
+                }
 
                 if (this.$form.filter(opts.cacheFilesAttr).length) {
                     data = this.cachedFiles.getFormData();
@@ -134,7 +157,7 @@
                 this.$form.find(':input').prop('disabled', true);
                 this.$form.trigger("ajaxforms:submit");
 
-                return this.request(url, data)
+                return this.request(url, data, isCustomData)
 
                     .done(function(response) {
                         self.$form.trigger("ajaxforms:submitsuccess");
@@ -212,10 +235,16 @@
             }
         };
 
-        return this.each(function()
-        {
-            new DjangoAjaxForms($(this));
-        });
+        if ( methods[options] ) {
+            return methods[ options ].apply( this, Array.prototype.slice.call( arguments, 1 ));
+        } else if ( typeof options === 'object' || ! options ) {
+            return this.each(function()
+            {
+                new DjangoAjaxForms($(this));
+            });
+        } else {
+            $.error( 'Method ' +  options + ' does not exist on jannounce' );
+        }
     };
 
     $.fn.djangoAjaxForms.defaults = {};
