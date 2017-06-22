@@ -243,7 +243,7 @@
                 new DjangoAjaxForms($(this));
             });
         } else {
-            $.error( 'Method ' +  options + ' does not exist on jannounce' );
+            $.error( 'Method ' +  options + ' does not exist.' );
         }
     };
 
