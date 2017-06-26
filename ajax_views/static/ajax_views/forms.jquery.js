@@ -175,14 +175,11 @@
                             var errors_list = response.extra_data.errors_list;
 
                             self.processFormErrors(self.$form, errors_list);
-
-                            if (!$.isEmptyObject(errors_list)) {
-                                self.$form.trigger("ajaxforms:fielderror");
-                            }
+                        } else {
+                            self.$form.trigger("ajaxforms:fail");
                         }
 
                         self.$form.find(':input').not(disabled_fields).prop('disabled', false);
-                        self.$form.trigger("ajaxforms:fail");
                     })
 
                     .always(function() {
@@ -193,21 +190,30 @@
             processFormErrors: function processFormErrors($form, errors_list)
             {
                 var $wrappers = $form.find("[id^='" + opts.fieldIdSelector + "']");
+                var nonfielderror = false;
 
                 $wrappers.removeClass(opts.errorClass).find("." + opts.fieldErrorClass).remove();
 
                 for (var fieldName in errors_list) {
                     var errors = errors_list[fieldName];
 
-                    var $field = $form.find("#" + opts.fieldIdSelector + fieldName);
-                    var onChange = function () {
-                        $field.removeClass('error', 200).find('.errorlist').fadeOut(200, function () {
-                            $(this).remove();
-                        });
-                    };
+                    if (fieldName.search("__all__") >= 0) {
+                        $form.trigger("ajaxforms:nonfielderror", [errors]);
+                        nonfielderror = true;
+                    } else {
+                        var $field = $form.find("#" + opts.fieldIdSelector + fieldName);
+                        var onChange = function () {
+                            $field.removeClass('error', 200).find('.errorlist').fadeOut(200, function () {
+                                $(this).remove();
+                            });
+                        };
 
-                    $field.addClass(opts.errorClass).append(this.renderErrorList(errors));
-                    $field.one('change', onChange);
+                        $field.addClass(opts.errorClass).append(this.renderErrorList(errors));
+                        $field.one('change', onChange);
+                    }
+                }
+                if ( !nonfielderror ){
+                    $form.trigger("ajaxforms:fielderror");
                 }
             },
 
