@@ -125,10 +125,8 @@
                 }
 
                 if ( !isCustomData ) {
-                    options.push({
-                        contentType: false,
-                        processData: false
-                    });
+                    options.contentType = false;
+                    options.processData = false;
                 }
 
                 return $.ajax(url, options);
