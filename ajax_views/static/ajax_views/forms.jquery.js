@@ -172,9 +172,11 @@
                         var response = $xhr.responseJSON;
 
                         if (response && response.hasOwnProperty('extra_data')) {
-                            self.processFormErrors(self.$form, response.errors_list);
+                            var errors_list = response.extra_data.errors_list;
 
-                            if (!$.isEmptyObject(response.errors_list)) {
+                            self.processFormErrors(self.$form, errors_list);
+
+                            if (!$.isEmptyObject(errors_list)) {
                                 self.$form.trigger("ajaxforms:fielderror");
                             }
                         }
