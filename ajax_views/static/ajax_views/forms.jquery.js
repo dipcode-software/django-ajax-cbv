@@ -70,7 +70,7 @@
 
     var methods = {
         submit: function (data) {
-            var daf = this.data('daf-data')
+            var daf = this.data('daf-data');
             if (daf) {
                 daf.submit(data);
             }
@@ -86,28 +86,30 @@
             cacheFilesAttr: "[data-ajax-submit-cachefiles]",
             canSubmitFn: null,
             onRenderErrorFn: null,
+            handleSubmitEvent: true,
         }, $.fn.djangoAjaxForms.defaults, options);
 
         function DjangoAjaxForms($form)
         {
-
-            $form.data('daf-data', this);
-
-            var self = this,
-                canSubmit = true;
-
             this.$form = $form;
-            this.$form.on('submit', function(e) {
-                e.preventDefault();
+            this.$form.data('daf-data', this);
 
-                if ( $.isFunction( opts.canSubmitFn ) ) {
-                    canSubmit = opts.canSubmitFn(self.$form);
-                }
+            if (opts.handleSubmitEvent) {
+                var self = this,
+                    canSubmit = true;
 
-                if (self.$form.length > 0 && canSubmit) {
-                    self.submit();
-                }
-            });
+                this.$form.on('submit', function(e) {
+                    e.preventDefault();
+
+                    if ( $.isFunction( opts.canSubmitFn ) ) {
+                        canSubmit = opts.canSubmitFn(self.$form);
+                    }
+
+                    if (self.$form.length > 0 && canSubmit) {
+                        self.submit();
+                    }
+                });
+            }
 
             if (this.$form.filter(opts.cacheFilesAttr).length) {
                 this.cachedFiles = new ManageCacheFile(this.$form);
@@ -122,7 +124,7 @@
                     data: data,
                     method: 'POST',
                     dataType: 'json'
-                }
+                };
 
                 if ( !isCustomData ) {
                     options.contentType = false;
@@ -200,6 +202,7 @@
                         nonfielderror = true;
                     } else {
                         var $field = $form.find("#" + opts.fieldIdSelector + fieldName);
+
                         var onChange = function () {
                             $field.removeClass('error', 200).find('.errorlist').fadeOut(200, function () {
                                 $(this).remove();
@@ -246,7 +249,12 @@
         } else if ( typeof options === 'object' || ! options ) {
             return this.each(function()
             {
-                new DjangoAjaxForms($(this));
+                var $this = $(this);
+                var daf = $this.data('daf-data');
+
+                if (!daf) {
+                    new DjangoAjaxForms($this);
+                }
             });
         } else {
             $.error( 'Method ' +  options + ' does not exist.' );
