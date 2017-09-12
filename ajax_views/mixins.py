@@ -1,8 +1,8 @@
 from __future__ import unicode_literals
 
-from django.template.loader import render_to_string
-from django.http import JsonResponse, Http404
 from django.conf import settings
+from django.http import Http404, JsonResponse
+from django.template.loader import render_to_string
 
 
 class AjaxResponseAction():
@@ -119,13 +119,17 @@ class PartialAjaxMixin(object):
     def get_partial_title(self):
         return self.partial_title
 
-    def render_to_response(self, context, **response_kwargs):
-        """ Returns the rendered template in JSON format """
+    def get_context_data(self, **kwargs):
+        context = super(PartialAjaxMixin, self).get_context_data(**kwargs)
         partial_title = self.get_partial_title()
         if partial_title:
             context.update({
-                'title': self.get_partial_title()
+                'title': partial_title
             })
+        return context
+
+    def render_to_response(self, context, **response_kwargs):
+        """ Returns the rendered template in JSON format """
         if self.request.is_ajax():
             data = {
                 "content": render_to_string(
