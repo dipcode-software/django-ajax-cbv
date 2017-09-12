@@ -37,12 +37,12 @@ class AjaxResponseMixin(object):
     json_status = AjaxResponseStatus.SUCCESS
 
     def json_to_response(self, action=None, json_status=None, success_url=None,
-                         json_data={}, **response_kwargs):
+                         json_data=None, **response_kwargs):
         """ Valid response with next action to be followed by the JS """
         data = {
             "status": self.get_status(json_status),
             "action": self.get_action(action),
-            "extra_data": self.get_json_data(json_data)
+            "extra_data": self.get_json_data(json_data or {})
         }
 
         if self.action == AjaxResponseAction.REDIRECT:
@@ -71,9 +71,9 @@ class AjaxResponseMixin(object):
 
         return self.json_status
 
-    def get_json_data(self, json_data={}):
+    def get_json_data(self, json_data=None):
         """ Returns any extra data to add to json """
-        return json_data
+        return json_data or {}
 
 
 class FormAjaxMixin(AjaxResponseMixin):
