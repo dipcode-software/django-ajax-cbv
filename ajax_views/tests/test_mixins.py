@@ -1,15 +1,16 @@
 from __future__ import unicode_literals
 
 import json
-from mock import MagicMock, patch
-
-from django.views.generic.edit import FormView
-from django.forms import Form
-from django.test import SimpleTestCase
 
 from ajax_views.mixins import (
-    AjaxResponseAction, AjaxResponseMixin, FormAjaxMixin, AjaxResponseStatus,
+    AjaxResponseAction, AjaxResponseMixin, AjaxResponseStatus, FormAjaxMixin,
     PartialAjaxMixin)
+from django.forms import Form
+from django.http import Http404
+from django.test import SimpleTestCase
+from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
+from mock import MagicMock, patch
 
 
 class DummyForm(Form):
@@ -71,9 +72,7 @@ class FormAjaxMixinTest(SimpleTestCase):
         """ """
         template_name = 'unit.html'
         prefix = 'unit'
-
-        def get_success_url(self):
-            return "/example/"
+        success_url = "/example/"
 
     def setUp(self):
         self.view = self.DummyFormView()
@@ -119,11 +118,19 @@ class FormAjaxMixinTest(SimpleTestCase):
         result = self.view.add_prefix({'field_1': 'invalid'}, 'test')
         self.assertEqual(result['test-field_1'], "invalid")
 
+    def test_get_success_url(self):
+        self.view.request.is_ajax.return_value = False
+        self.assertEqual(self.view.get_success_url(), '/example/')
+
+    def test_get_success_url_with_ajax(self):
+        self.view.request.is_ajax.return_value = True
+        self.assertIsNone(self.view.get_success_url())
+
 
 class PartialAjaxMixinTest(SimpleTestCase):
     """ """
 
-    class DummyView(PartialAjaxMixin):
+    class DummyView(PartialAjaxMixin, TemplateView):
         """ """
 
         def get_template_names(self):
@@ -133,6 +140,21 @@ class PartialAjaxMixinTest(SimpleTestCase):
         self.view = self.DummyView()
         self.view.request = MagicMock()
 
+    def test_get_partial_title(self):
+        self.view.partial_title = 'Unit Test'
+        result = self.view.get_partial_title()
+        self.assertEqual(result, 'Unit Test')
+
+    def test_get_context_data(self):
+        self.view.partial_title = 'Unit'
+        result = self.view.get_context_data()
+        self.assertEqual(result['title'], 'Unit')
+
+    def test_get_context_data_without_partial_title(self):
+        self.view.partial_title = None
+        context = self.view.get_context_data()
+        self.assertFalse('title' in context)
+
     @patch('ajax_views.mixins.render_to_string',
            return_value="<html></html>")
     def test_render_to_response(self, render_to_string):
@@ -141,3 +163,14 @@ class PartialAjaxMixinTest(SimpleTestCase):
         self.assertEqual(content['content'], "<html></html>")
         render_to_string.assert_called_with(
             "example.html", {}, request=self.view.request)
+
+    def test_render_to_response_without_ajax(self):
+        self.view.request.is_ajax.return_value = False
+        with self.assertRaises(Http404):
+            self.view.render_to_response({})
+
+    def test_render_to_response_without_ajax_debug(self):
+        self.view.request.is_ajax.return_value = False
+        with self.settings(DEBUG=True):
+            result = self.view.render_to_response({})
+            self.assertEqual(result.status_code, 200)
