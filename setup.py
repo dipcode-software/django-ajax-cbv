@@ -10,7 +10,7 @@ setup(
     description='Django module to easily use generic views with ajax.',
     url='https://github.com/dipcode-software/django-ajax-partials/',
     author='Dipcode',
-    author_email='info@dipcode.com',
+    author_email='team@dipcode.com',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
