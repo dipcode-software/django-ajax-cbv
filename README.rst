@@ -5,7 +5,9 @@ Django Ajax views
 
 Django module to easily use generic views with ajax.
 
-Table of contents: \* `How to install`_; \* `License`_.
+Table of contents:
+ * `How to install`_;
+ * `License`_.
 
 How to install
 --------------
