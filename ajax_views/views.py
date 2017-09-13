@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
+from .mixins import PartialAjaxMixin, FormAjaxMixin, AjaxResponseMixin
+
 from django.views.generic import (
     TemplateView, CreateView, UpdateView, DeleteView)
 
-from .mixins import PartialAjaxMixin, FormAjaxMixin, AjaxResponseMixin
 
 
 class TemplateAjaxView(PartialAjaxMixin, TemplateView):
