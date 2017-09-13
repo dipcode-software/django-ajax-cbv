@@ -2,9 +2,9 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.views.generic import (
-    TemplateView, CreateView, UpdateView, DeleteView)
+    CreateView, DeleteView, TemplateView, UpdateView)
 
-from .mixins import PartialAjaxMixin, FormAjaxMixin, AjaxResponseMixin
+from .mixins import AjaxResponseMixin, FormAjaxMixin, PartialAjaxMixin
 
 
 class TemplateAjaxView(PartialAjaxMixin, TemplateView):

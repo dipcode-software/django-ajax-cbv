@@ -1,19 +1,13 @@
-import os
 from setuptools import find_packages, setup
 
-with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
-    README = readme.read()
-
-os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-ajax-partials',
-    version='0.1.0-alpha',
+    version=__import__("ajax_views").__version__,
     packages=find_packages(),
     include_package_data=True,
     license='MIT',
-    description='Django module to easily use ajax forms.',
-    long_description=README,
+    description='Django module to easily use generic views with ajax.',
     url='https://github.com/dipcode-software/django-ajax-partials/',
     author='Dipcode',
     author_email='info@dipcode.com',
