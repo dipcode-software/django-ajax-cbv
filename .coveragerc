@@ -1,5 +1,5 @@
 [run]
-source=ajax_views/
+source=ajax_cbv/
 branch=True
 omit=
     *tests*
