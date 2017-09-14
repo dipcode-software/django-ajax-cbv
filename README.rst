@@ -1,7 +1,7 @@
 Django Ajax views
 =================
 
-|Build Status| |Codacy Badge| |Coverage Status|
+|Build Status| |Codacy Badge| |Coverage Status| |BCH compliance|
 
 Django module to easily use generic views with ajax.
 
@@ -44,3 +44,5 @@ projects and commercial products.
    :target: https://www.codacy.com/app/srtabs/django-ajax-views?utm_source=github.com&utm_medium=referral&utm_content=dipcode-software/django-ajax-views&utm_campaign=Badge_Grade
 .. |Coverage Status| image:: https://coveralls.io/repos/github/dipcode-software/django-ajax-views/badge.svg?branch=master
    :target: https://coveralls.io/github/dipcode-software/django-ajax-views?branch=master
+.. |BCH compliance| image:: https://bettercodehub.com/edge/badge/dipcode-software/django-ajax-views?branch=master
+   :target: https://bettercodehub.com/
