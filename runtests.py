@@ -7,13 +7,13 @@ from django.conf import settings
 
 settings.configure(
     INSTALLED_APPS=(
-        'ajax_views',
+        'ajax_cbv',
     ),
 )
 
 if __name__ == "__main__":
     django.setup()
     runner = DiscoverRunner()
-    failures = runner.run_tests(['ajax_views'])
+    failures = runner.run_tests(['ajax_cbv'])
     if failures:
         sys.exit(failures)

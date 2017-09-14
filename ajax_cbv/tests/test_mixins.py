@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 import json
 
-from ajax_views.mixins import (
+from ajax_cbv.mixins import (
     AjaxResponseAction, AjaxResponseMixin, AjaxResponseStatus, FormAjaxMixin,
     PartialAjaxMixin)
 from django.forms import Form
@@ -155,7 +155,7 @@ class PartialAjaxMixinTest(SimpleTestCase):
         context = self.view.get_context_data()
         self.assertFalse('title' in context)
 
-    @patch('ajax_views.mixins.render_to_string',
+    @patch('ajax_cbv.mixins.render_to_string',
            return_value="<html></html>")
     def test_render_to_response(self, render_to_string):
         result = self.view.render_to_response({})

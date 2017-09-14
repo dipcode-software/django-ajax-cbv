@@ -10,10 +10,10 @@ from setuptools import Command, find_packages, setup
 
 
 # Package meta-data.
-VERSION = __import__("ajax_views").__version__
-NAME = 'django-ajax-partials'
+VERSION = __import__("ajax_cbv").__version__
+NAME = 'django-ajax-cbv'
 DESCRIPTION = 'Django module to easily use generic views with ajax. '
-URL = 'https://github.com/dipcode-software/django-ajax-partials/'
+URL = 'https://github.com/dipcode-software/django-ajax-cbv/'
 EMAIL = 'team@dipcode.com'
 AUTHOR = 'Dipcode'
 
