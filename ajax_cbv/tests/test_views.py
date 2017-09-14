@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from ajax_views.views import DeleteAjaxView
+from ajax_cbv.views import DeleteAjaxView
 from django.test import RequestFactory, SimpleTestCase
 from mock import Mock, patch
 

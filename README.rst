@@ -1,9 +1,9 @@
-Django Ajax views
+Django Ajax CBV
 =================
 
 |Build Status| |Codacy Badge| |Coverage Status| |BCH compliance|
 
-Django module to easily use generic views with ajax.
+Django module to easily use generic Class Based Views with ajax.
 
 Table of contents:
  * `How to install`_;

@@ -4,4 +4,4 @@ from django.apps import AppConfig
 
 
 class AjaxViewsConfig(AppConfig):
-    name = 'ajax_views'
+    name = 'ajax_cbv'
