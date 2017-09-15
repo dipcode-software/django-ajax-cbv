@@ -38,7 +38,7 @@ projects and commercial products.
 .. _How to install: #how-to-install
 .. _License: #license
 
-.. |Build Status| image:: https://travis-ci.org/dipcode-software/django-ajax-views.svg?branch=master
+.. |Build Status| image:: https://travis-ci.org/dipcode-software/django-ajax-cbv.svg?branch=master
    :target: https://travis-ci.org/dipcode-software/django-ajax-cbv
 .. |Codacy Badge| image:: https://api.codacy.com/project/badge/Grade/a64f03c2bd344561bc21e05c23aa04fb
    :target: https://www.codacy.com/app/srtabs/django-ajax-cbv?utm_source=github.com&utm_medium=referral&utm_content=dipcode-software/django-ajax-cbv&utm_campaign=Badge_Grade
