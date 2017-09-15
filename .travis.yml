@@ -16,9 +16,13 @@ env:
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - python: "3.6"
+  exclude:
+    - python: "2.7"
       env: djangomaster
+    - python: "3.6"
+      env: django110
+  allow_failures:
+    - env: djangomaster
 
 cache:
   directories:
@@ -27,7 +31,7 @@ cache:
 
 install:
   - pip install --upgrade pip wheel setuptools
-  - pip install coveralls codacy-coverage tox
+  - pip install coveralls codacy-coverage tox-travis
 
 script:
   - tox
