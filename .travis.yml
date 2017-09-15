@@ -12,10 +12,12 @@ env:
    - django110
    - django111
    - djangomaster
-   - flake8
 
 matrix:
   fast_finish: true
+  include:
+    - python: "3.4"
+      env: flake8
   exclude:
     - python: "2.7"
       env: djangomaster
