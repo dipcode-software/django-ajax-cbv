@@ -9,6 +9,7 @@ python:
 
 env:
   matrix:
+   - django19
    - django110
    - django111
    - djangomaster
@@ -22,7 +23,9 @@ matrix:
     - python: "2.7"
       env: djangomaster
     - python: "3.6"
-      env: django110
+      env: django19
+    - python: "3.6"
+      env: django111
   allow_failures:
     - env: djangomaster
 
