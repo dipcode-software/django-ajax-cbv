@@ -1,7 +1,7 @@
 Django Ajax CBV
 =================
 
-|Pypi| |Build Status| |Codacy Badge| |Coverage Status| |BCH compliance|
+|Build Status| |Codacy Badge| |Coverage Status| |BCH compliance| |Pypi|
 
 Django module to easily use generic Class Based views with ajax.
 
@@ -45,8 +45,6 @@ projects and commercial products.
 .. _How to install: #how-to-install
 .. _License: #license
 
-.. |Pypi| image:: https://img.shields.io/pypi/v/django-ajax-cbv.svg?style=flat-square
-   :target: https://pypi.python.org/pypi/django-ajax-cbv
 .. |Build Status| image:: https://travis-ci.org/dipcode-software/django-ajax-cbv.svg?branch=master
    :target: https://travis-ci.org/dipcode-software/django-ajax-cbv
 .. |Codacy Badge| image:: https://api.codacy.com/project/badge/Grade/a64f03c2bd344561bc21e05c23aa04fb
@@ -55,3 +53,5 @@ projects and commercial products.
    :target: https://coveralls.io/github/dipcode-software/django-ajax-cbv?branch=master
 .. |BCH compliance| image:: https://bettercodehub.com/edge/badge/dipcode-software/django-ajax-cbv?branch=master
    :target: https://bettercodehub.com/
+.. |Pypi| image:: https://img.shields.io/pypi/v/django-ajax-cbv.svg?style=flat-square
+   :target: https://pypi.python.org/pypi/django-ajax-cbv
