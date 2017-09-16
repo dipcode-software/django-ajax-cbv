@@ -1,3 +1,7 @@
+include AUTHORS.md
+include CHANGELOG.md
+include CODE_OF_CONDUCT.md
 include LICENSE
-include README.md
+include MANIFEST.in
+include README.rst
 recursive-include ajax_cbv/static *

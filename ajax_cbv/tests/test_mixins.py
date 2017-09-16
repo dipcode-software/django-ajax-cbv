@@ -27,7 +27,7 @@ class AjaxResponseMixinTest(SimpleTestCase):
 
     def test_response_no_action(self):
         response = self.object.json_to_response()
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode("utf-8"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(content['action'], "nothing")
         self.assertEqual(content['status'], AjaxResponseStatus.SUCCESS)
@@ -35,7 +35,7 @@ class AjaxResponseMixinTest(SimpleTestCase):
     def test_response_with_action_refresh(self):
         response = self.object.json_to_response(
             action=AjaxResponseAction.REFRESH)
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode("utf-8"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(content['action'], "refresh")
         self.assertEqual(content['status'], AjaxResponseStatus.SUCCESS)
@@ -44,7 +44,7 @@ class AjaxResponseMixinTest(SimpleTestCase):
         response = self.object.json_to_response(
             action=AjaxResponseAction.REDIRECT,
             success_url="/unit/test")
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode("utf-8"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(content['action'], "redirect")
         self.assertEqual(content['status'], AjaxResponseStatus.SUCCESS)
@@ -87,7 +87,7 @@ class FormAjaxMixinTest(SimpleTestCase):
     def test_form_invalid_as_ajax(self):
         self.view.request.is_ajax.return_value = True
         response = self.view.form_invalid(self.form)
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode("utf-8"))
         self.assertEqual(response.status_code, 400)
         self.assertEqual(content['action'], "nothing")
         self.assertEqual(content['status'], AjaxResponseStatus.ERROR)
@@ -100,7 +100,7 @@ class FormAjaxMixinTest(SimpleTestCase):
     def test_form_valid_as_ajax(self):
         self.view.request.is_ajax.return_value = True
         response = self.view.form_valid(self.form)
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode("utf-8"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(content['action'], "nothing")
         self.assertEqual(content['status'], AjaxResponseStatus.SUCCESS)
@@ -159,7 +159,7 @@ class PartialAjaxMixinTest(SimpleTestCase):
            return_value="<html></html>")
     def test_render_to_response(self, render_to_string):
         result = self.view.render_to_response({})
-        content = json.loads(result.content)
+        content = json.loads(result.content.decode("utf-8"))
         self.assertEqual(content['content'], "<html></html>")
         render_to_string.assert_called_with(
             "example.html", {}, request=self.view.request)
