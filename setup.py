@@ -49,9 +49,9 @@ class PublishCommand(Command):
         except OSError:
             pass
 
-        self.status('Building Source and Wheel distribution…')
+        self.status('Building Source and Wheel (universal) distribution…')
         os.system(
-            '{0} setup.py sdist bdist_wheel '.format(sys.executable)
+            '{0} setup.py sdist bdist_wheel --universal'.format(sys.executable)
         )
 
         self.status('Uploading the package to {env} via Twine…'\
