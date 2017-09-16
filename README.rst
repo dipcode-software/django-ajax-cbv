@@ -11,10 +11,7 @@ Table of contents:
 
 Compatibility
 -------------
-Django
- * 1.10
- * 1.11
- * latest
+Tested with python 2.7, 3.4, 3.5, 3.6 and Django 1.9, 1.10, 1.11: `Travis CI <https://travis-ci.org/dipcode-software/django-ajax-cbv>`_
 
 How to install
 --------------
